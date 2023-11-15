@@ -1,0 +1,15 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+<[^>]+> { printf("HTML Tag: %s\n", yytext); }
+[ \t\n] ; /* Ignore spaces, tabs, and newlines */
+. ; /* Ignore other characters */
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
