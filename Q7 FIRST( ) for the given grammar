@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+#define MAX_PROD 3
+#define MAX_LEN 10
+void findFirst(char[], char, char[][MAX_LEN]);
+int main() 
+{
+    char productions[MAX_PROD][MAX_LEN];
+    char nonTerm;
+    char firstSet[MAX_LEN];
+    printf("Enter the grammar productions:\n");
+    for (int i = 0; i < MAX_PROD; i++) 
+    {
+        printf("Production %d: ", i + 1);
+        fgets(productions[i], sizeof(productions[i]), stdin);
+    }
+    printf("\nEnter the non-terminal for which FIRST set needs to be found: ");
+    scanf(" %c", &nonTerm);
+    findFirst(firstSet, nonTerm, productions);
+    printf("\nFIRST(%c) = { ", nonTerm);
+    for (int i = 0; i < strlen(firstSet); i++) 
+    {
+        printf("%c", firstSet[i]);
+        if (i < strlen(firstSet) - 1) 
+        {
+            printf(", ");
+        }
+    }
+    printf(" }\n");
+    return 0;
+}
+void findFirst(char result[], char nonTerm, char productions[][MAX_LEN]) 
+{
+    int i, j, k;
+    int epsilonFlag;
+    strcpy(result, "");
+    for (i = 0; i < MAX_PROD; i++) 
+  {
+        // Check if the production is for the given non-terminal
+        if (productions[i][0] == nonTerm) 
+{
+            j = 3; // Skip non-terminal and '->'
+            epsilonFlag = 1;
+            while (productions[i][j] != '\n') 
+        {
+                if (!isupper(productions[i][j])) 
+              {
+                    strncat(result, &productions[i][j], 1);
+                    epsilonFlag = 0;
+                    break;
+                } 
+              else 
+              {
+                    findFirst(result, productions[i][j], productions);
+                    for (k = 0; k < strlen(result); k++) 
+                    {
+                        if (result[k] == 'e')
+                        {
+                            epsilonFlag = 1;
+                        }
+                    }
+                    if (!epsilonFlag)   
+                    {
+                        break;
+                    }
+                }
+                j++;
+            }
+            if (epsilonFlag) 
+            {
+                strncat(result, "e", 1);
+            }
+        }
+    }
+}
