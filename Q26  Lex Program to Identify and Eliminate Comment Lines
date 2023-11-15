@@ -1,0 +1,16 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+\/\/[^\n]* ; /* Ignore single-line comments */
+\/\* { int c; while ((c = getchar()) != EOF) { if (c == '*' && getchar() == '/') break; } }
+[ \t\n] ; /* Ignore spaces, tabs, and newlines */
+. ; /* Ignore other characters */
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
