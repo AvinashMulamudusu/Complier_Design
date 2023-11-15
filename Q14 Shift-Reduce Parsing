@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_STACK_SIZE 30
+#define MAX_INPUT_SIZE 30
+
+char stack[MAX_STACK_SIZE];
+char input[MAX_INPUT_SIZE];
+
+int top = -1;
+int inputIndex = 0;
+
+void push(char symbol) {
+    if (top < MAX_STACK_SIZE - 1) {
+        top++;
+        stack[top] = symbol;
+    } else {
+        printf("Error: Stack overflow.\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
+void pop() {
+    if (top >= 0) {
+        top--;
+    } else {
+        printf("Error: Stack underflow.\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
+void displayStack() {
+    printf("Stack: ");
+    for (int i = 0; i <= top; i++) {
+        printf("%c ", stack[i]);
+    }
+    printf("\n");
+}
+
+void shiftReduceParse() {
+    printf("Enter the input string: ");
+    fgets(input, sizeof(input), stdin);
+
+    printf("\nParsing Steps:\n");
+
+    while (1) {
+        displayStack();
+        printf("Input: %s\n", &input[inputIndex]);
+
+        if (stack[top] == 'S' && input[inputIndex] == 'i') {
+            pop();
+            push('A');
+            push('B');
+        } else if (stack[top] == 'S' && input[inputIndex] == '(') {
+            pop();
+            push('A');
+            push('B');
+        } else if (stack[top] == 'B' && input[inputIndex] == '+') {
+            pop();
+            push('+');
+            push('A');
+        } else if (stack[top] == 'B' && input[inputIndex] == '*') {
+            pop();
+            push('*');
+            push('A');
+        } else if (stack[top] == 'B' && input[inputIndex] == ')') {
+            pop();
+        } else if (stack[top] == 'A' && input[inputIndex] == 'i') {
+            pop();
+        } else if (stack[top] == 'A' && input[inputIndex] == '(') {
+            pop();
+            push(')');
+            push('S');
+        } else if (stack[top] == 'S' && input[inputIndex] == '$') {
+            printf("Parsing successful.\n");
+            break;
+        } else {
+            printf("Error: Invalid input.\n");
+            break;
+        }
+
+        inputIndex++;
+    }
+}
+
+int main() {
+    push('$');
+    push('S');
+    shiftReduceParse();
+
+    return 0;
+}
