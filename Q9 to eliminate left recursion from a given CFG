@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_PROD 3
+#define MAX_LEN 10
+
+void eliminateLeftRecursion(char[][MAX_LEN]);
+
+int main() {
+    char productions[MAX_PROD][MAX_LEN];
+
+    // Input the grammar productions
+    printf("Enter the grammar productions:\n");
+    for (int i = 0; i < MAX_PROD; i++) {
+        printf("Production %d: ", i + 1);
+        fgets(productions[i], sizeof(productions[i]), stdin);
+    }
+
+    // Eliminate left recursion
+    eliminateLeftRecursion(productions);
+
+    // Display the modified productions
+    printf("\nModified Productions after Left Recursion Elimination:\n");
+    for (int i = 0; i < MAX_PROD; i++) {
+        printf("%s", productions[i]);
+    }
+
+    return 0;
+}
+
+void eliminateLeftRecursion(char productions[][MAX_LEN]) {
+    for (int i = 0; i < MAX_PROD; i++) {
+        for (int j = 0; j < i; j++) {
+            // Find common prefix in productions
+            int k = 0;
+            while (productions[i][k] == productions[j][k] && productions[i][k] != '\0') {
+                k++;
+            }
+
+            if (productions[i][k] == '\0') {
+                // Common prefix found, eliminate left recursion
+                char newNonTerm = productions[i][0] + 1;
+
+                // Modify the j-th production
+                printf("A -> %c%c\'\n", productions[i][0], newNonTerm);
+                printf("%c\' -> %s%c\' | e\n", productions[i][0], productions[j] + k, newNonTerm);
+
+                // Modify the i-th production
+                printf("%c -> %c\'\n", productions[i][0], newNonTerm);
+            }
+        }
+    }
+}
