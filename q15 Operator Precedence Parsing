@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+#define SIZE 10
+
+char op[SIZE][SIZE];
+
+int getRow(char c) {
+    switch (c) {
+        case '+':
+            return 0;
+        case '*':
+            return 1;
+        case '(':
+            return 2;
+        case ')':
+            return 3;
+        case 'i':
+            return 4;
+        case '$':
+            return 5;
+        default:
+            return -1;
+    }
+}
+
+int getCol(char c) {
+    switch (c) {
+        case '+':
+            return 0;
+        case '*':
+            return 1;
+        case '(':
+            return 2;
+        case ')':
+            return 3;
+        case 'i':
+            return 4;
+        case '$':
+            return 5;
+        default:
+            return -1;
+    }
+}
+
+void check(char a, char b) {
+    int row, col;
+    row = getRow(a);
+    col = getCol(b);
+
+    if (op[row][col] == '<') {
+        printf("Reduce\n");
+    } else if (op[row][col] == '=') {
+        printf("Accept\n");
+    } else {
+        printf("Shift\n");
+    }
+}
+
+int main() {
+    int i, j;
+    char terminals[] = {'+', '*', '(', ')', 'i', '$'};
+
+    strcpy(op[0], ">><<<<");
+    strcpy(op[1], ">>>><<");
+    strcpy(op[2], "<<<<<=");
+    strcpy(op[3], ">>>>>=");
+    strcpy(op[4], ">>>>>>");
+    strcpy(op[5], "<<<<<<");
+
+    char input[30];
+    printf("Enter the input string: ");
+    scanf("%s", input);
+
+    strcat(input, "$");
+
+    printf("Stack\tInput\tAction\n");
+
+    char stack[30];
+    stack[0] = '$';
+    stack[1] = '\0';
+
+    int inputIndex = 0;
+
+    do {
+        printf("%s\t%s\t", stack, &input[inputIndex]);
+        check(stack[strlen(stack) - 1], input[inputIndex]);
+
+        if (op[getRow(stack[strlen(stack) - 1])][getCol(input[inputIndex])] == '<' ||
+            op[getRow(stack[strlen(stack) - 1])][getCol(input[inputIndex])] == '=') {
+            strncat(stack, &input[inputIndex], 1);
+            inputIndex++;
+        } else {
+            printf("Error\n");
+            break;
+        }
+    } while (strcmp(stack, "$$") != 0);
+
+    return 0;
+}
