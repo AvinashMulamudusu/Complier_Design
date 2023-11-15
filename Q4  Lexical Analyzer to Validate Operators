@@ -1,0 +1,16 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+
+[+\-*/]   printf("Valid Operator: %s\n", yytext);
+
+.         printf("Invalid Character: %s\n", yytext);
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
