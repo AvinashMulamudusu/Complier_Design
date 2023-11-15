@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    char *op;
+    char *arg1;
+    char *arg2;
+    struct IRNode *next;
+} IRNode;
+
+void generate_assembly(IRNode *node) {
+    // Implementation of assembly code generation
+}
+
+void compile(IRNode *code) {
+    while (code != NULL) {
+        generate_assembly(code);
+        code = code->next;
+    }
+}
+
+int main() {
+    IRNode *code;
+
+    // Parse the input IR code
+    // ...
+
+    // Compile the IR code to assembly language
+    compile(code);
+
+    return 0;
+}
