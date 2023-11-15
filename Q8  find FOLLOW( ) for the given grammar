@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_PROD 3
+#define MAX_LEN 10
+
+// Function to find FOLLOW set for a given non-terminal
+void findFollow(char[], char, char[][MAX_LEN], char);
+
+int main() {
+    char productions[MAX_PROD][MAX_LEN];
+    char nonTerm;
+    char followSet[MAX_LEN];
+
+    // Input the grammar productions
+    printf("Enter the grammar productions:\n");
+    for (int i = 0; i < MAX_PROD; i++) {
+        printf("Production %d: ", i + 1);
+        fgets(productions[i], sizeof(productions[i]), stdin);
+    }
+
+    // Input the non-terminal for which FOLLOW set needs to be found
+    printf("\nEnter the non-terminal for which FOLLOW set needs to be found: ");
+    scanf(" %c", &nonTerm);
+
+    // Find FOLLOW set for the given non-terminal
+    findFollow(followSet, nonTerm, productions, 'S');
+
+    // Display the FOLLOW set
+    printf("\nFOLLOW(%c) = { ", nonTerm);
+    for (int i = 0; i < strlen(followSet); i++) {
+        printf("%c", followSet[i]);
+        if (i < strlen(followSet) - 1) {
+            printf(", ");
+        }
+    }
+    printf(" }\n");
+
+    return 0;
+}
+
+// Function to find FOLLOW set for a given non-terminal
+void findFollow(char result[], char nonTerm, char productions[][MAX_LEN], char startSymbol) {
+    int i, j, k, m;
+    int found;
+    char temp[MAX_LEN];
+
+    // Initialize the result array
+    strcpy(result, "");
+
+    // Add $ to FOLLOW set of the start symbol
+    if (nonTerm == startSymbol) {
+        strncat(result, "$", 1);
+    }
+
+    for (i = 0; i < MAX_PROD; i++) {
+        j = 3; // Skip non-terminal and '->'
+
+        while (productions[i][j] != '\n') {
+            // Find the occurrence of the given non-terminal in the production
+            if (productions[i][j] == nonTerm) {
+                // Check if the non-terminal is at the end of the production
+                if (productions[i][j + 1] == '\0' || productions[i][j + 1] == '|') {
+                    // If yes, add the FOLLOW set of the left-hand side non-terminal
+                    findFollow(result, productions[i][0], productions, startSymbol);
+                } else {
+                    // If no, find the FIRST set of the next symbol in the production
+                    k = j + 1;
+                    while (productions[i][k] != '\0' && productions[i][k] != '|') {
+                        // If it's a terminal, add it to the result and break
+                        if (!isupper(productions[i][k])) {
+                            strncat(result, &productions[i][k], 1);
+                            break;
+                        } else {
+                            // If it's a non-terminal, find its FIRST set
+                            temp[0] = '\0';
+                            findFollow(temp, productions[i][k], productions, startSymbol);
+
+                            // Check if it has epsilon in its FIRST set
+                            found = 0;
+                            for (m = 0; m < strlen(temp); m++) {
+                                if (temp[m] == 'e') {
+                                    found = 1;
+                                    break;
+                                }
+                            }
+                            // If it doesn't have epsilon, add it to the result and break
+                            if (!found) {
+                                strcat(result, temp);
+                                break;
+                            }
+                        }
+                        k++;
+                    }
+                    // If the loop completes, add the FOLLOW set of the left-hand side non-terminal
+                    if (productions[i][k] == '\0' || productions[i][k] == '|') {
+                        findFollow(result, productions[i][0], productions, startSymbol);
+                    }
+                }
+            }
+            j++;
+        }
+    }
+}
