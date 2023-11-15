@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <string.h>
+void analyze(char* str) 
+{
+    int i = 0;
+    int len = strlen(str);
+    int inComment = 0;
+    while (i < len) 
+{
+        if (str[i] == '/' && str[i + 1] == '/') 
+{
+            inComment = 1;
+            i += 2; // Skip "//"
+            while (i < len && str[i] != '\n') 
+            {
+                i++;
+            }
+        }
+        else if (str[i] == '/' && str[i + 1] == '*') 
+{
+            inComment = 1;
+            i += 2; // Skip "/*"
+            while (i < len && !(str[i] == '*' && str[i + 1] == '/')) 
+           {
+                i++;
+            }
+            i += 2; // Skip "*/"
+        }
+        else 
+     {
+            // Skip whitespace
+            while (isspace(str[i]) && !inComment) 
+           {
+                i++;
+            }
+            if (!inComment) 
+           {
+                printf("%c", str[i]);
+            }
+            if (str[i] == '\n') 
+           {
+                inComment = 0;
+            }
+            i++;
+        }
+    }
+}
+int main() 
+{
+    char input[1000];
+    printf("Enter the input C source code:\n");
+    fgets(input, sizeof(input), stdin);
+    analyze(input);
+    return 0;
+}
