@@ -1,0 +1,15 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+[0-9]+ { printf("Constant: %s\n", yytext); }
+[ \t\n] ; /* Ignore spaces, tabs, and newlines */
+. ; /* Ignore other characters */
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
