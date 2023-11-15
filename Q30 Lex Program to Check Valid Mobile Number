@@ -1,0 +1,15 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+[789][0-9]{9} { printf("Valid Mobile Number: %s\n", yytext); }
+[ \t\n] ; /* Ignore spaces, tabs, and newlines */
+. ; /* Ignore other characters */
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
