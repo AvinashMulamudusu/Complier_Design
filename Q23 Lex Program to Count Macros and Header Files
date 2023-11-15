@@ -1,0 +1,16 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+#define [^\n]* { printf("Macro: %s\n", yytext); }
+#include[ \t]*[^\n]* { printf("Header file: %s\n", yytext); }
+[ \t\n] ; /* Ignore spaces, tabs, and newlines */
+. ; /* Ignore other characters */
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
