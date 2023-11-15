@@ -1,0 +1,69 @@
+#include <stdio.h>
+#include <ctype.h>
+
+void E();
+void E_prime();
+void T();
+void T_prime();
+void F();
+
+char expression[30];
+int position = 0;
+
+int main() {
+    printf("Enter an arithmetic expression: ");
+    fgets(expression, sizeof(expression), stdin);
+
+    // Start parsing
+    E();
+
+    if (expression[position] == '\n') {
+        printf("Parsing successful. The expression is valid.\n");
+    } else {
+        printf("Parsing failed. The expression is not valid.\n");
+    }
+
+    return 0;
+}
+
+void E() {
+    T();
+    E_prime();
+}
+
+void E_prime() {
+    if (expression[position] == '+') {
+        position++;
+        T();
+        E_prime();
+    }
+}
+
+void T() {
+    F();
+    T_prime();
+}
+
+void T_prime() {
+    if (expression[position] == '*') {
+        position++;
+        F();
+        T_prime();
+    }
+}
+
+void F() {
+    if (isdigit(expression[position])) {
+        position++;
+    } else if (expression[position] == '(') {
+        position++;
+        E();
+        if (expression[position] == ')') {
+            position++;
+        } else {
+            printf("Error: Missing closing parenthesis.\n");
+        }
+    } else {
+        printf("Error: Invalid expression.\n");
+    }
+}
