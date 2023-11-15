@@ -1,0 +1,14 @@
+%{
+#include <stdio.h>
+%}
+%%
+[ \t\n] ; /* Ignore spaces, tabs, and newlines */
+\/\/[^\n]* ; /* Ignore single-line comments */
+\/\*([^*]|\*[^/])*\*\/ ; /* Ignore multi-line comments */
+. ; /* Ignore other characters */
+%%
+int main() 
+{
+    yylex();
+    return 0;
+}
