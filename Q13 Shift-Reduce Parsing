@@ -1,0 +1,18 @@
+%{
+#include <stdio.h>
+#include <string.h>
+%}
+
+%token ID
+
+%%
+
+S   : '(' L ')' | ID;
+L   : L ',' S | S;
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
