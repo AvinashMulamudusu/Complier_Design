@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_PROD 3
+#define MAX_LEN 10
+
+void eliminateLeftFactoring(char[][MAX_LEN]);
+
+int main() {
+    char productions[MAX_PROD][MAX_LEN];
+
+    // Input the grammar productions
+    printf("Enter the grammar productions:\n");
+    for (int i = 0; i < MAX_PROD; i++) {
+        printf("Production %d: ", i + 1);
+        fgets(productions[i], sizeof(productions[i]), stdin);
+    }
+
+    // Eliminate left factoring
+    eliminateLeftFactoring(productions);
+
+    // Display the modified productions
+    printf("\nModified Productions after Left Factoring Elimination:\n");
+    for (int i = 0; i < MAX_PROD; i++) {
+        printf("%s", productions[i]);
+    }
+
+    return 0;
+}
+
+void eliminateLeftFactoring(char productions[][MAX_LEN]) {
+    for (int i = 0; i < MAX_PROD; i++) {
+        for (int j = 0; j < i; j++) {
+            // Find common prefix in productions
+            int k = 0;
+            while (productions[i][k] == productions[j][k] && productions[i][k] != '\0') {
+                k++;
+            }
+
+            if (productions[i][k] != '\0') {
+                // Common prefix found, eliminate left factoring
+                char newNonTerm = productions[i][0] + 1;
+
+                // Modify the j-th production
+                printf("A -> %cB | a\n", productions[i][0]);
+                printf("B -> %sB' | e\n", productions[i] + k);
+
+                // Modify the i-th production
+                printf("%c -> %cB\n", productions[i][0], newNonTerm);
+            }
+        }
+    }
+}
