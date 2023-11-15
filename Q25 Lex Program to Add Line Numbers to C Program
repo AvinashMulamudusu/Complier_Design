@@ -1,0 +1,15 @@
+%{
+#include <stdio.h>
+int lineCount = 1;
+%}
+
+%%
+\n { printf("%d: ", lineCount++); }
+[^\n]+ ; /* Ignore other characters */
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
